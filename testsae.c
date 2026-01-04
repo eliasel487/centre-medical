@@ -15,7 +15,7 @@ void global(void){
     f = adjq(f, p3);
     afficher(f);
     printf("Longueur : %d\n", longueur(f));
-    Patient p = tete(f);
+    Patient p = tete(f);    
     printf("Tete : %s %s\n", p.nom, p.numSecu);
     f = supt(f);
     afficher(f);

@@ -63,6 +63,9 @@ typedef struct {
 } CentreMedical;
 
 //Fonction 
+void initialiserCentre(CentreMedical *centre);
+void ajouterPraticien(CentreMedical *centre);
+void supprimerPraticien(CentreMedical *centre);
 
 //Fonction pour les Files
 File filenouv(void);
