@@ -88,7 +88,7 @@ int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
 void triPatientsAlphabetique(CellulePatient **liste);
 void triPatientsParDate(CellulePatient **liste);
 void afficherMenuPrincipal();
-void saisirChaine(char message[], char resultat[], int taille);
+
 
 
 //Fonction pour les Files
