@@ -354,3 +354,77 @@ int fileVide(Praticien *praticien) {
     }
     return 0;
 }
+
+void appelerProchainPatient(Praticien *praticien) {
+    // 1. Vérifier si la salle d'attente est vide
+    if (fileVide(praticien)) {
+        printf("La salle d'attente est vide.\n");
+        return;
+    }
+
+    // 2. Récupérer et retirer le patient (FIFO)
+    Patient p = retirerPatientFile(praticien);
+    printf("\nAppel du patient : %s\n", p.nom [cite: 19]);
+
+    // 3. Chercher si le patient est déjà dans la patientèle
+    int trouve = -1;
+    for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
+        if (strcmp(praticien->maPatientele.listePatients[i].numSecu, p.numSecu) == 0) {
+            trouve = i;
+            break;
+        }
+    }
+
+    if (trouve != -1) {
+        // Patient déjà connu : on met à jour sa date [cite: 19]
+        printf("Patient deja suivi. Mise a jour de la date de visite.\n");
+        printf("Jour de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.jour);
+        printf("Mois de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.mois);
+        printf("Annee de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.annee);
+    } else {
+        // Nouveau patient : on vérifie la capacité max [cite: 29, 30]
+        if (praticien->maPatientele.nbPatients < praticien->maPatientele.capaciteMax) {
+            printf("Nouveau patient. Ajouter a la clientele ? (1:Oui / 0:Non) : ");
+            int rep;
+            scanf("%d", &rep);
+            if (rep == 1) {
+                printf("Numero de Secu : "); scanf("%s", p.numSecu);
+                printf("Jour : "); scanf("%d", &p.derniereVisite.jour);
+                printf("Mois : "); scanf("%d", &p.derniereVisite.mois);
+                printf("Annee : "); scanf("%d", &p.derniereVisite.annee);
+
+                // On l'ajoute dans le tableau [cite: 19]
+                praticien->maPatientele.listePatients[praticien->maPatientele.nbPatients] = p;
+                praticien->maPatientele.nbPatients++;
+            }
+        } else {
+            printf("Clientele complete[cite: 17]. Consultation simple uniquement.\n");
+        }
+    }
+}
+
+void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]) {
+    int trouve = 0;
+    
+    for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
+        if (strcmp(praticien->maPatientele.listePatients[i].numSecu, numero_secu) == 0) {
+            printf("Mise a jour pour %s.\n", praticien->maPatientele.listePatients[i].nom);
+            
+            printf("Nouveau jour : "); 
+            scanf("%d", &praticien->maPatientele.listePatients[i].derniereVisite.jour);
+            
+            printf("Nouveau mois : "); 
+            scanf("%d", &praticien->maPatientele.listePatients[i].derniereVisite.mois);
+            
+            printf("Nouvelle annee : "); 
+            scanf("%d", &praticien->maPatientele.listePatients[i].derniereVisite.annee [cite: 19]);
+            
+            trouve = 1;
+            break;
+        }
+    }
+
+    if (trouve == 0) {
+        printf("Aucun patient trouve avec ce numero de secu[cite: 17].\n");
+    }
+}

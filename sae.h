@@ -63,31 +63,57 @@ typedef struct {
 
 //Fonction 
 void initialiserCentre(CentreMedical *centre); //fait
+
 void ajouterPraticien(CentreMedical *centre);  //fait
+
 void supprimerPraticien(CentreMedical *centre); //fait
+
 void chargerCentre(CentreMedical *centre, const char *nom_fichier); //elias
+
 void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //elias
+
 int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+
 void afficherSpecialites(CentreMedical *centre); //fait
+
 void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+
 void afficherCentre(CentreMedical *centre); 
+
 void enregistrerArriveePatient(CentreMedical *centre);
-int praticienPeutPrendrePatient(Praticien *praticien); //fait 
+
+int praticienPeutPrendrePatient(Praticien *praticien); //fait
+
 void ajouterPatientFile(Praticien *praticien, Patient patient); //fait
+
 Patient retirerPatientFile(Praticien *praticien);//fait
+
 int fileVide(Praticien *praticien);//fait
-void appelerProchainPatient(Praticien *praticien);
-void mettreAJourDateVisite(Praticien *praticien, char numero_secu[], char nouvelle_date[]);
+
+void appelerProchainPatient(Praticien *praticien);//fait
+
+void mettreAJourDateVisite(Praticien *praticien, char numero_secu[], char nouvelle_date[]);//fait
+
 void afficherPatienteleAlphabetique(Praticien *praticien);
+
 void afficherPatienteleParDate(Praticien *praticien);
+
 void afficherPatientsAbsentsDepuis(Praticien *praticien, char date[]);
+
 int rechercheLineairePatient(CellulePatient *liste, char numero_secu[]);
+
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
+
 void triPatientsAlphabetique(CellulePatient **liste);
+
 void triPatientsParDate(CellulePatient **liste);
+
 void afficherMenuPrincipal(CentreMedical *centre); //fait
+
 void menuPraticien(CentreMedical *centre); //fait
+
 void menuSecretaire(CentreMedical *centre); //fait
 
 
