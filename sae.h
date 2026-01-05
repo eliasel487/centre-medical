@@ -2,8 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-
-//Structure 
+ 
 #define MAX_SPECIALITES 20
 
 typedef enum {
@@ -87,7 +86,9 @@ int rechercheLineairePatient(CellulePatient *liste, char numero_secu[]);
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
 void triPatientsAlphabetique(CellulePatient **liste);
 void triPatientsParDate(CellulePatient **liste);
-void afficherMenuPrincipal();
+void afficherMenuPrincipal(CentreMedical *centre); //fait
+void menuPraticien(CentreMedical *centre); //fait
+void menuSecretaire(CentreMedical *centre); //fait
 
 
 
