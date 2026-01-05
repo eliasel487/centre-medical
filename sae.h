@@ -66,14 +66,11 @@ typedef struct {
 void initialiserCentre(CentreMedical *centre); //fait
 void ajouterPraticien(CentreMedical *centre);  //fait
 void supprimerPraticien(CentreMedical *centre); //fait
-void initialiserCentre(CentreMedical *centre);
 void chargerCentre(CentreMedical *centre, const char *nom_fichier);
 void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier);
 int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 void afficherSpecialites(CentreMedical *centre);
-int ajouterPraticien(CentreMedical *centre);
-void supprimerPraticien(CentreMedical *centre);
 void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 void afficherCentre(CentreMedical *centre);
 void enregistrerArriveePatient(CentreMedical *centre);
