@@ -186,3 +186,49 @@ void supprimerPraticien(CentreMedical *centre) {
 
     printf("Praticien %s non trouvé dans la spécialité %s.\n", nomDr, nomSpe);
 }
+
+void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]) {
+    int i;
+    MaillonPraticien *p;
+
+    for (i = 0; i < centre->nbSpecialites; i++) {
+        if (strcmp(centre->tSpecialites[i].nomSpecialite, nom_specialite) == 0) {
+
+            p = centre->tSpecialites[i].listePraticiens;
+            while (p != NULL) {
+                printf("%s\n", p->donnee.nom);
+                p = p->suivant;
+            }
+            return;
+        }
+    }
+}
+
+int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]) {
+    int i;
+
+    for (i = 0; i < centre->nbSpecialites; i++) {
+        if (strcmp(centre->tSpecialites[i].nomSpecialite, nom_specialite) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]) {
+
+    if (centre->nbSpecialites >= MAX_SPECIALITES) {
+        return 0;
+    }
+
+    if (rechercherSpecialite(centre, nom_specialite) != -1) {
+        return 0;
+    }
+
+    strcpy(centre->tSpecialites[centre->nbSpecialites].nomSpecialite, nom_specialite);
+    centre->tSpecialites[centre->nbSpecialites].listePraticiens = NULL;
+    centre->tSpecialites[centre->nbSpecialites].nbPraticiens = 0;
+
+    centre->nbSpecialites++;
+    return 1;
+}

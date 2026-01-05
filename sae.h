@@ -63,9 +63,36 @@ typedef struct {
 } CentreMedical;
 
 //Fonction 
+void initialiserCentre(CentreMedical *centre); //fait
+void ajouterPraticien(CentreMedical *centre);  //fait
+void supprimerPraticien(CentreMedical *centre); //fait
 void initialiserCentre(CentreMedical *centre);
-void ajouterPraticien(CentreMedical *centre);
+void chargerCentre(CentreMedical *centre, const char *nom_fichier);
+void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier);
+int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+void afficherSpecialites(CentreMedical *centre);
+int ajouterPraticien(CentreMedical *centre);
 void supprimerPraticien(CentreMedical *centre);
+void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+void afficherCentre(CentreMedical *centre);
+void enregistrerArriveePatient(CentreMedical *centre);
+int praticienPeutPrendrePatient(Praticien *praticien);
+void ajouterPatientFile(Praticien *praticien, Patient patient);
+Patient retirerPatientFile(Praticien *praticien);
+int fileVide(Praticien *praticien);
+void appelerProchainPatient(Praticien *praticien);
+void mettreAJourDateVisite(Praticien *praticien, char numero_secu[], char nouvelle_date[]);
+void afficherPatienteleAlphabetique(Praticien *praticien);
+void afficherPatienteleParDate(Praticien *praticien);
+void afficherPatientsAbsentsDepuis(Praticien *praticien, char date[]);
+int rechercheLineairePatient(CellulePatient *liste, char numero_secu[]);
+int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
+void triPatientsAlphabetique(CellulePatient **liste);
+void triPatientsParDate(CellulePatient **liste);
+void afficherMenuPrincipal();
+void saisirChaine(char message[], char resultat[], int taille);
+
 
 //Fonction pour les Files
 File filenouv(void);
