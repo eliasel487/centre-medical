@@ -75,8 +75,8 @@ void afficherCentre(CentreMedical *centre);
 void enregistrerArriveePatient(CentreMedical *centre);
 int praticienPeutPrendrePatient(Praticien *praticien); //fait 
 void ajouterPatientFile(Praticien *praticien, Patient patient); //fait
-Patient retirerPatientFile(Praticien *praticien);
-int fileVide(Praticien *praticien);
+Patient retirerPatientFile(Praticien *praticien);//fait
+int fileVide(Praticien *praticien);//fait
 void appelerProchainPatient(Praticien *praticien);
 void mettreAJourDateVisite(Praticien *praticien, char numero_secu[], char nouvelle_date[]);
 void afficherPatienteleAlphabetique(Praticien *praticien);

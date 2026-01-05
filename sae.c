@@ -335,3 +335,22 @@ void ajouterPatientFile(Praticien *praticien, Patient patient) {
     praticien->salleAttente = adjq(praticien->salleAttente, patient);
     printf("Patient ajoute a la file d'attente du Dr %s.\n", praticien->nom);
 }
+
+// Retire et retourne le patient en tête de la file d'attente
+Patient retirerPatientFile(Praticien *praticien) {
+    if (fileVide(praticien)) {
+        printf("Erreur : La file d'attente est vide.\n");
+        exit(1); 
+    }
+    Patient p = tete(praticien->salleAttente);
+    praticien->salleAttente = supt(praticien->salleAttente);
+    return p;
+}
+
+// Vérifie si la salle d'attente est vide
+int fileVide(Praticien *praticien) {
+    if (estVide(praticien->salleAttente) == VRAI) {
+        return 1;
+    }
+    return 0;
+}
