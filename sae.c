@@ -68,6 +68,84 @@ void afficher(File f){
     printf("\n");
 }
 
+void triParEchange(int tab[], int n){
+    int pge;
+    while (n>1){
+        pge = plusGrand(tab,n);
+        echanger(tab,pge,n-1);
+        n = n - 1;
+    }
+}
+
+void echanger(int tab[], int i, int j){
+    int aux;
+    aux = tab[i];
+    tab[i] = tab[j];
+    tab[j] = aux;
+}
+
+int plusGrand(int tab[], int n){
+    int i, pge=0;
+    for (i=0;i<n;i++){
+        if (tab[i]>tab[pge])
+            pge = i;
+    }
+    return pge;
+}
+
+void fusion(int R[], int n, int S[], int m, int T[]){
+    int i=0, j=0, k=0;
+    while (i<n && j<m){
+        if (R[i] <= S[j]){
+            T[k] = R[i];
+            i++;
+            k++;
+        }
+        else{
+            T[k]=S[j];
+            j++;
+            k++;
+        }
+    }
+    while(i<n){
+        T[k]=R[i];
+        i++;
+        k++;
+
+    }
+    while(j<m){
+        T[k]=S[j];
+        j++;
+        k++
+    }
+}
+
+void copier(int T[], int i, int j, int R[]){
+    int k=0;
+    while(i<j){
+        R[k]=T[i];
+        i++;
+        k++;
+    }
+}
+
+void trifusion(int tab[], int m){
+    if (n==1)
+        return;
+    int *R, *S;
+    R = (int*)malloc((n/2)*sizeof(int));
+    S = (int*)malloc((n-n/2)*sizeof(int));
+    if (R == NULL || S == NULL)
+        exit(1);
+    copier(T,0,n/2,R);
+    copier(T,n/2,n,S);
+    trifusion(R,n/2);
+    trifusionf(S,n-n/2);
+    fusion(R,n/2,S,n-n/2,T);
+    free(R);
+    free(S);
+}
+
 Patient tete(File f){
     if(estVide(f)){
         printf("op interdite\n");
@@ -83,10 +161,10 @@ void initialiserCentre(CentreMedical *centre){
 
 void ajouterPraticien(CentreMedical *centre){
     char nomSpe[50], nomDr[50];
-    int capaMax;
+    int capacitemax, i;
 
     if (centre->nbSpecialites >= MAX_SPECIALITES) {
-        printf("Erreur : Le centre a atteint son nombre maximal de spécialités.\n"); [cite: 25]
+        printf("Le centre a atteint son nombre maximal de spécialités.\n");
         return;
     }
 
@@ -94,23 +172,23 @@ void ajouterPraticien(CentreMedical *centre){
     scanf("%s", nomSpe);
     printf("Nom du praticien : ");
     scanf("%s", nomDr);
-    printf("Capacité maximale de sa patientèle : "); [cite: 29]
-    scanf("%d", &capaMax);
+    printf("Capacité maximale de sa patientèle : ");
+    scanf("%d", &capacitemax);
 
     // 1. Chercher si la spécialité _existe déjà
-    int idxSpe = -1;
-    for(int i = 0; i < centre->nbSpecialites; i++){
+    int ind = -1;
+    for(i=0; i<centre->nbSpecialites; i++){
         if (strcmp(centre->tSpecialites[i].nomSpecialite, nomSpe) == 0){
-            idxSpe = i;
+            ind = i;
             break;
         }
     }
     // 2. Si elle n'existe pas, on la crée
-    if (idxSpe == -1) {
-        idxSpe = centre->nbSpecialites;
-        strcpy(centre->tSpecialites[idxSpe].nomSpecialite, nomSpe);
-        centre->tSpecialites[idxSpe].listePraticiens = NULL;
-        centre->tSpecialites[idxSpe].nbPraticiens = 0;
+    if (ind == -1) {
+        ind = centre->nbSpecialites;
+        strcpy(centre->tSpecialites[ind].nomSpecialite, nomSpe);
+        centre->tSpecialites[ind].listePraticiens = NULL;
+        centre->tSpecialites[ind].nbPraticiens = 0;
         centre->nbSpecialites++;
     }
     // 3. Créer le nouveau(tmp) maillon praticien (Liste chaînée)
@@ -122,7 +200,7 @@ void ajouterPraticien(CentreMedical *centre){
 
     // Initialisation de la patientèle (Tableau dynamique)
     tmp->donnee.maPatientele.nbPatients = 0;
-    tmp->donnee.maPatientele.capaciteMax = capaMax;
+    tmp->donnee.maPatientele.capaciteMax = capacitemax;
     tmp->donnee.maPatientele.listePatients = (Patient*)malloc(capaMax * sizeof(Patient));
 
     // 4. Ajout en tête de la liste des praticiens de la spécialité [cite: 26, 27]
@@ -231,4 +309,29 @@ int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]) {
 
     centre->nbSpecialites++;
     return 1;
+}
+
+void afficherSpecialites(CentreMedical *centre) {
+    int i;
+    if (centre->nbSpecialites == 0) {
+        printf("Aucune spécialité n'est enregistrée dans le centre.\n");
+        return;
+    }
+    triParEchangeSpecialites(centre->tSpecialites, centre->nbSpecialites);
+    printf("Liste des Spécialités (Ordre Lexicographique)\n");
+    for (i=0;i<centre->nbSpecialites;i++) {
+        printf("%s\n", centre->tSpecialites[i].nomSpecialite);
+    }
+}
+
+int praticienPeutPrendrePatient(Praticien *praticien) {
+    if (praticien->maPatientele.nbPatients < praticien->maPatientele.capaciteMax) {
+        return 1;
+    }
+    return 0;
+}
+
+void ajouterPatientFile(Praticien *praticien, Patient patient) {
+    praticien->salleAttente = adjq(praticien->salleAttente, patient);
+    printf("Patient ajoute a la file d'attente du Dr %s.\n", praticien->nom);
 }

@@ -70,12 +70,12 @@ void chargerCentre(CentreMedical *centre, const char *nom_fichier); //elias
 void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //elias
 int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
-void afficherSpecialites(CentreMedical *centre); //elias
+void afficherSpecialites(CentreMedical *centre); //fait
 void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 void afficherCentre(CentreMedical *centre); 
 void enregistrerArriveePatient(CentreMedical *centre);
-int praticienPeutPrendrePatient(Praticien *praticien); //yanis 
-void ajouterPatientFile(Praticien *praticien, Patient patient); //yanis
+int praticienPeutPrendrePatient(Praticien *praticien); //fait 
+void ajouterPatientFile(Praticien *praticien, Patient patient); //fait
 Patient retirerPatientFile(Praticien *praticien);
 int fileVide(Praticien *praticien);
 void appelerProchainPatient(Praticien *praticien);
