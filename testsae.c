@@ -4,30 +4,39 @@
 #include <string.h>
 #include "sae.h"
 
+int main(void) {
+    CentreMedical monCentre;
+    int choix = -1;
+    initialiserCentre(&monCentre);
+    chargerCentre(&monCentre, "donnees_centre.txt");
 
-void global(void){
-    File f = filenouv();
-    Patient p1 = {"Alice", "123456789012345", {10, 3, 2024}};
-    Patient p2 = {"Bob", "987654321098765", {15, 4, 2024}};
-    Patient p3 = {"Charly", "111222333444555", {20, 5, 2024}};
-    f = adjq(f, p1);
-    f = adjq(f, p2);
-    f = adjq(f, p3);
-    afficher(f);
-    printf("Longueur : %d\n", longueur(f));
-    Patient p = tete(f);    
-    printf("Tete : %s %s\n", p.nom, p.numSecu);
-    f = supt(f);
-    afficher(f);
-    f = supt(f);
-    f = supt(f);
-    if(estVide(f)){
-        printf("File vide\n");
+    while (choix != 0) {
+        printf("\n==============================\n");
+        printf("  CENTRE MEDICAL\n");
+        printf("==============================\n");
+        printf("1 - Secretaire\n");
+        printf("2 - Praticien\n");
+        printf("0 - Quitter\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+
+        if (choix == 1) {
+            menuSecretaire(&monCentre);
+        }
+        else if (choix == 2) {
+            menuPraticien(&monCentre);
+        }
+        else if (choix == 0) {
+            printf("Fermeture du programme.\n");
+            sauvegarderCentre(&monCentre, "donnees_centre.txt");
+            exit(1);
+        }
+        else {
+            printf("Choix invalide.\n");
+            continue;
+        }
     }
-}
 
-int main(void){
-    global();
     return 0;
 }
 

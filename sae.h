@@ -68,10 +68,6 @@ void ajouterPraticien(CentreMedical *centre);  //fait
 
 void supprimerPraticien(CentreMedical *centre); //fait
 
-void chargerCentre(CentreMedical *centre, const char *nom_fichier); //elias
-
-void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //elias
-
 int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
@@ -80,9 +76,9 @@ void afficherSpecialites(CentreMedical *centre); //fait
 
 void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
 
-void afficherCentre(CentreMedical *centre); 
+void afficherCentre(CentreMedical *centre); //fait
 
-void enregistrerArriveePatient(CentreMedical *centre);
+void enregistrerArriveePatient(CentreMedical *centre);//fait 
 
 int praticienPeutPrendrePatient(Praticien *praticien); //fait
 
@@ -110,15 +106,16 @@ void triPatientsAlphabetique(Patient tab[]);
 
 void triPatientsParDate(Patient tab[]);
 
-void afficherMenuPrincipal(CentreMedical *centre); //fait a comparer
-
 void menuPraticien(CentreMedical *centre); //fait
 
 void menuSecretaire(CentreMedical *centre); //elias ok
 
 void menuPraticien(CentreMedical *centre); //elias ok
+
 int main(void);//elias ok
+
 void chargerCentre(CentreMedical *centre, const char *nom_fichier); //elias ok
+
 void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //elias ok
 
 

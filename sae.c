@@ -586,41 +586,6 @@ void menuPraticien(CentreMedical *centre) {
     }
 }
 
-int main(void) {
-    CentreMedical monCentre;
-    int choix = -1;
-    initialiserCentre(&monCentre);
-    chargerCentre(&monCentre, "donnees_centre.txt");
-
-    while (choix != 0) {
-        printf("\n==============================\n");
-        printf("  CENTRE MEDICAL\n");
-        printf("==============================\n");
-        printf("1 - Secretaire\n");
-        printf("2 - Praticien\n");
-        printf("0 - Quitter\n");
-        printf("Votre choix : ");
-        scanf("%d", &choix);
-
-        if (choix == 1) {
-            menuSecretaire(&monCentre);
-        }
-        else if (choix == 2) {
-            menuPraticien(&monCentre);
-        }
-        else if (choix == 0) {
-            printf("Fermeture du programme.\n");
-            sauvegarderCentre(&monCentre, "donnees_centre.txt");
-            exit(1);
-        }
-        else {
-            printf("Choix invalide.\n");
-            continue;
-        }
-    }
-
-    return 0;
-}
 
 void chargerCentre(CentreMedical *centre, const char *nom_fichier) {
     FILE *f;
@@ -716,4 +681,79 @@ void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier) {
         }
     }
     fclose(f);
+}
+
+void afficherCentre(CentreMedical *centre) {
+    if (centre->nbSpecialites == 0) {
+        printf("Le centre ne contient aucune specialite.\n");
+        return;
+    }
+
+    printf("\n--- ETAT GENERAL DU CENTRE MEDICAL ---\n");
+    for (int i = 0; i < centre->nbSpecialites; i++) {        printf("\nSPECIALITE : %s\n", centre->tSpecialites[i].nomSpecialite);
+        
+        MaillonPraticien *courant = centre->tSpecialites[i].listePraticiens;
+        if (courant == NULL) {
+            printf("  (Aucun praticien enregistre)\n");
+        }
+
+        while (courant != NULL) {
+            printf("  Dr. %-15s | Patientele : %d/%d", 
+                   courant->donnee.nom, 
+                   courant->donnee.maPatientele.nbPatients, 
+                   courant->donnee.maPatientele.capaciteMax);
+                        printf(" | En attente : %d\n", longueur(courant->donnee.salleAttente));
+            courant = courant->suivant;
+        }
+    }
+}
+
+void enregistrerArriveePatient(CentreMedical *centre) {
+    char nomPat[50], nomSpe[50], nomDr[50];
+    int aDejaMedecin;
+
+    printf("Nom du patient : "); scanf("%s", nomPat);
+    printf("Specialite demandee : "); scanf("%s", nomSpe);
+
+    int idxSpe = rechercherSpecialite(centre, nomSpe);
+    if (idxSpe == -1) {
+        printf("Desole, pas de praticien de cette specialite dans le centre.\n"); [cite: 17]
+        return;
+    }
+
+    printf("Etes-vous deja suivi par un praticien ici ? (1:Oui / 0:Non) : ");
+    scanf("%d", &aDejaMedecin);
+
+    Praticien *choisi = NULL;
+    MaillonPraticien *courant = centre->tSpecialites[idxSpe].listePraticiens;
+
+    if (aDejaMedecin == 1) {
+        printf("Nom de votre praticien : "); scanf("%s", nomDr);
+        while (courant != NULL) {
+            if (strcmp(courant->donnee.nom, nomDr) == 0) {
+                choisi = &(courant->donnee);
+                break;
+            }
+            courant = courant->suivant;
+        }
+    } else {
+        while (courant != NULL) {
+            if (courant->donnee.maPatientele.nbPatients < courant->donnee.maPatientele.capaciteMax) {
+                choisi = &(courant->donnee);
+                break;
+            }
+            courant = courant->suivant;
+        }
+    }
+    if (choisi != NULL) {
+        Patient nouveau;
+        strcpy(nouveau.nom, nomPat);
+        strcpy(nouveau.numSecu, "Inconnu");
+        nouveau.derniereVisite.jour = 0;
+
+        ajouterPatientFile(choisi, nouveau);
+        printf("Patient enregistre dans la file de Dr. %s.\n", choisi->nom);
+    } else {
+        printf("Pas de place disponible pour un nouveau patient chez nos praticiens.\n"); [cite: 17, 35]
+    }
 }
