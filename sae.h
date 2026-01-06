@@ -94,7 +94,7 @@ int fileVide(Praticien *praticien);//fait
 
 void appelerProchainPatient(Praticien *praticien);//fait
 
-void mettreAJourDateVisite(Praticien *praticien, char numero_secu[], char nouvelle_date[]);//fait
+void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]);//fait
 
 void afficherPatienteleAlphabetique(Praticien *praticien);
 
@@ -102,22 +102,24 @@ void afficherPatienteleParDate(Praticien *praticien);
 
 void afficherPatientsAbsentsDepuis(Praticien *praticien, char date[]);
 
-int rechercheLineairePatient(CellulePatient *liste, char numero_secu[]);
+int rechercheLineairePatient(Patient tab[], char numero_secu[]);
 
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
 
-void triPatientsAlphabetique(CellulePatient **liste);
+void triPatientsAlphabetique(Patient tab[]);
 
-void triPatientsParDate(CellulePatient **liste);
+void triPatientsParDate(Patient tab[]);
 
-void afficherMenuPrincipal(CentreMedical *centre); //fait
+void afficherMenuPrincipal(CentreMedical *centre); //fait a comparer
 
 void menuPraticien(CentreMedical *centre); //fait
 
-void menuSecretaire(CentreMedical *centre); //fait
+void menuSecretaire(CentreMedical *centre); //elias ok
 
-void menuPraticien(CentreMedical *centre);
-int main(void);
+void menuPraticien(CentreMedical *centre); //elias ok
+int main(void);//elias ok
+void chargerCentre(CentreMedical *centre, const char *nom_fichier); //elias ok
+void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //elias ok
 
 
 //Fonction pour les Files

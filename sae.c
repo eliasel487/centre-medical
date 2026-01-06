@@ -67,16 +67,6 @@ void afficher(File f){
     }
     printf("\n");
 }
-
-void triParEchange(int tab[], int n){
-    int pge;
-    while (n>1){
-        pge = plusGrand(tab,n);
-        echanger(tab,pge,n-1);
-        n = n - 1;
-    }
-}
-
 void echanger(int tab[], int i, int j){
     int aux;
     aux = tab[i];
@@ -92,6 +82,16 @@ int plusGrand(int tab[], int n){
     }
     return pge;
 }
+
+void triParEchange(int tab[], int n){
+    int pge;
+    while (n>1){
+        pge = plusGrand(tab,n);
+        echanger(tab,pge,n-1);
+        n = n - 1;
+    }
+}
+
 
 void fusion(int R[], int n, int S[], int m, int T[]){
     int i=0, j=0, k=0;
@@ -116,7 +116,7 @@ void fusion(int R[], int n, int S[], int m, int T[]){
     while(j<m){
         T[k]=S[j];
         j++;
-        k++
+        k++;
     }
 }
 
@@ -129,7 +129,7 @@ void copier(int T[], int i, int j, int R[]){
     }
 }
 
-void trifusion(int tab[], int m){
+void trifusion(int T[], int n){
     if (n==1)
         return;
     int *R, *S;
@@ -140,7 +140,7 @@ void trifusion(int tab[], int m){
     copier(T,0,n/2,R);
     copier(T,n/2,n,S);
     trifusion(R,n/2);
-    trifusionf(S,n-n/2);
+    trifusion(S,n-n/2);
     fusion(R,n/2,S,n-n/2,T);
     free(R);
     free(S);
@@ -161,7 +161,7 @@ void initialiserCentre(CentreMedical *centre){
 
 void ajouterPraticien(CentreMedical *centre){
     char nomSpe[50], nomDr[50];
-    int capacitemax, i;
+    int capacitemax, i,idxSpe;
 
     if (centre->nbSpecialites >= MAX_SPECIALITES) {
         printf("Le centre a atteint son nombre maximal de spécialités.\n");
@@ -201,7 +201,7 @@ void ajouterPraticien(CentreMedical *centre){
     // Initialisation de la patientèle (Tableau dynamique)
     tmp->donnee.maPatientele.nbPatients = 0;
     tmp->donnee.maPatientele.capaciteMax = capacitemax;
-    tmp->donnee.maPatientele.listePatients = (Patient*)malloc(capaMax * sizeof(Patient));
+    tmp->donnee.maPatientele.listePatients = (Patient*)malloc(capacitemax * sizeof(Patient));
 
     // 4. Ajout en tête de la liste des praticiens de la spécialité [cite: 26, 27]
     tmp->suivant = centre->tSpecialites[idxSpe].listePraticiens;
@@ -219,7 +219,7 @@ void supprimerPraticien(CentreMedical *centre) {
     printf("Spécialité du praticien : ");
     scanf("%s", nomSpe);
     
-    int idxSpe = trouverSpecialite(centre, nomSpe); // On réutilise la fonction de recherche
+    int idxSpe = ajouterSpecialite(centre, nomSpe); // On réutilise la fonction de recherche  trouverSpecialite
     if (idxSpe == -1) {
         printf("Spécialité introuvable.\n");
         return;
@@ -310,6 +310,22 @@ int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]) {
     centre->nbSpecialites++;
     return 1;
 }
+void triParEchangeSpecialites(Specialite tab[], int n) {
+    int i, j, min;
+    Specialite temp;
+    
+    for (i = 0; i < n - 1; i++) {
+        min = i;
+        for (j = i + 1; j < n; j++) {
+            if (strcmp(tab[j].nomSpecialite, tab[min].nomSpecialite) < 0) {
+                min = j;
+            }
+        }
+        temp = tab[min];
+        tab[min] = tab[i];
+        tab[i] = temp;
+    }
+}
 
 void afficherSpecialites(CentreMedical *centre) {
     int i;
@@ -364,7 +380,7 @@ void appelerProchainPatient(Praticien *praticien) {
 
     // 2. Récupérer et retirer le patient (FIFO)
     Patient p = retirerPatientFile(praticien);
-    printf("\nAppel du patient : %s\n", p.nom [cite: 19]);
+    printf("\nAppel du patient : %s\n", p.nom);
 
     // 3. Chercher si le patient est déjà dans la patientèle
     int trouve = -1;
@@ -376,13 +392,13 @@ void appelerProchainPatient(Praticien *praticien) {
     }
 
     if (trouve != -1) {
-        // Patient déjà connu : on met à jour sa date [cite: 19]
+
         printf("Patient deja suivi. Mise a jour de la date de visite.\n");
         printf("Jour de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.jour);
         printf("Mois de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.mois);
         printf("Annee de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.annee);
     } else {
-        // Nouveau patient : on vérifie la capacité max [cite: 29, 30]
+
         if (praticien->maPatientele.nbPatients < praticien->maPatientele.capaciteMax) {
             printf("Nouveau patient. Ajouter a la clientele ? (1:Oui / 0:Non) : ");
             int rep;
@@ -417,7 +433,7 @@ void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]) {
             scanf("%d", &praticien->maPatientele.listePatients[i].derniereVisite.mois);
             
             printf("Nouvelle annee : "); 
-            scanf("%d", &praticien->maPatientele.listePatients[i].derniereVisite.annee [cite: 19]);
+            scanf("%d", &praticien->maPatientele.listePatients[i].derniereVisite.annee);
             
             trouve = 1;
             break;
@@ -495,7 +511,7 @@ void menuSecretaire(CentreMedical *centre) {
             continue;
         }
         if (choix == 0) {
-            main()
+            main();
         }
         else { 
             printf("Choix invalide.\n"); 
@@ -561,7 +577,7 @@ void menuPraticien(CentreMedical *centre) {
             continue;
         }
         if (choix == 0) {
-            main()
+            main();
         }
         else { 
             printf("Choix invalide.\n"); 
@@ -571,7 +587,10 @@ void menuPraticien(CentreMedical *centre) {
 }
 
 int main(void) {
+    CentreMedical monCentre;
     int choix = -1;
+    initialiserCentre(&monCentre);
+    chargerCentre(&monCentre, "donnees_centre.txt");
 
     while (choix != 0) {
         printf("\n==============================\n");
@@ -584,13 +603,15 @@ int main(void) {
         scanf("%d", &choix);
 
         if (choix == 1) {
-            menuSecretaire();
+            menuSecretaire(&monCentre);
         }
         else if (choix == 2) {
-            menuPraticien();
+            menuPraticien(&monCentre);
         }
         else if (choix == 0) {
             printf("Fermeture du programme.\n");
+            sauvegarderCentre(&monCentre, "donnees_centre.txt");
+            exit(1);
         }
         else {
             printf("Choix invalide.\n");
@@ -599,4 +620,100 @@ int main(void) {
     }
 
     return 0;
+}
+
+void chargerCentre(CentreMedical *centre, const char *nom_fichier) {
+    FILE *f;
+    int i, j, k, nbPrat, nbP;
+    MaillonPraticien *nouveauPrat;
+    
+    f = fopen(nom_fichier, "r");
+    if (f == NULL) {
+        centre->nbSpecialites = 0;
+        return;
+    }
+
+    if (fscanf(f, "%d", &centre->nbSpecialites) != 1) {
+        centre->nbSpecialites = 0;
+        fclose(f);
+        return;
+    }
+
+    for (i = 0; i < centre->nbSpecialites; i++) {
+        fscanf(f, "%s", centre->tSpecialites[i].nomSpecialite);
+        fscanf(f, "%d", &nbPrat);
+        
+        centre->tSpecialites[i].nbPraticiens = 0;
+        centre->tSpecialites[i].listePraticiens = NULL;
+
+        for (j = 0; j < nbPrat; j++) {
+            nouveauPrat = (MaillonPraticien *)malloc(sizeof(MaillonPraticien));
+            if (nouveauPrat == NULL) exit(1);
+            
+            fscanf(f, "%s %d %d", 
+                   nouveauPrat->donnee.nom, 
+                   &nouveauPrat->donnee.maPatientele.capaciteMax, 
+                   &nouveauPrat->donnee.maPatientele.nbPatients);
+
+            nouveauPrat->donnee.salleAttente.t = NULL;
+            nouveauPrat->donnee.salleAttente.q = NULL;
+
+            nbP = nouveauPrat->donnee.maPatientele.nbPatients;
+            nouveauPrat->donnee.maPatientele.listePatients = (Patient *)malloc(sizeof(Patient) * nouveauPrat->donnee.maPatientele.capaciteMax);
+            if (nouveauPrat->donnee.maPatientele.listePatients == NULL) exit(1);
+            
+            for (k = 0; k < nbP; k++) {
+                fscanf(f, "%s %s %d/%d/%d", 
+                       nouveauPrat->donnee.maPatientele.listePatients[k].nom,
+                       nouveauPrat->donnee.maPatientele.listePatients[k].numSecu,
+                       &nouveauPrat->donnee.maPatientele.listePatients[k].derniereVisite.jour,
+                       &nouveauPrat->donnee.maPatientele.listePatients[k].derniereVisite.mois,
+                       &nouveauPrat->donnee.maPatientele.listePatients[k].derniereVisite.annee);
+            }
+
+            nouveauPrat->suivant = centre->tSpecialites[i].listePraticiens;
+            centre->tSpecialites[i].listePraticiens = nouveauPrat;
+            centre->tSpecialites[i].nbPraticiens++;
+        }
+    }
+    fclose(f);
+}
+
+void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier) {
+    FILE *f;
+    int i, k, nbP;
+    MaillonPraticien *courantPrat;
+    
+    f = fopen(nom_fichier, "w");
+    if (f == NULL) {
+        return;
+    }
+
+    fprintf(f, "%d\n", centre->nbSpecialites);
+
+    for (i = 0; i < centre->nbSpecialites; i++) {
+        fprintf(f, "%s\n", centre->tSpecialites[i].nomSpecialite);
+        fprintf(f, "%d\n", centre->tSpecialites[i].nbPraticiens);
+        
+        courantPrat = centre->tSpecialites[i].listePraticiens;
+        
+        while (courantPrat != NULL) {
+            fprintf(f, "%s %d %d\n", 
+                    courantPrat->donnee.nom, 
+                    courantPrat->donnee.maPatientele.capaciteMax, 
+                    courantPrat->donnee.maPatientele.nbPatients);
+
+            nbP = courantPrat->donnee.maPatientele.nbPatients;
+            for (k = 0; k < nbP; k++) {
+                fprintf(f, "%s %s %d/%d/%d\n", 
+                        courantPrat->donnee.maPatientele.listePatients[k].nom,
+                        courantPrat->donnee.maPatientele.listePatients[k].numSecu,
+                        courantPrat->donnee.maPatientele.listePatients[k].derniereVisite.jour,
+                        courantPrat->donnee.maPatientele.listePatients[k].derniereVisite.mois,
+                        courantPrat->donnee.maPatientele.listePatients[k].derniereVisite.annee);
+            }
+            courantPrat = courantPrat->suivant;
+        }
+    }
+    fclose(f);
 }
