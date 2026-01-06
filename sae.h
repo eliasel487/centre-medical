@@ -92,11 +92,11 @@ void appelerProchainPatient(Praticien *praticien);//fait
 
 void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]);//fait
 
-void afficherPatienteleAlphabetique(Praticien *praticien);
+void afficherPatienteleAlphabetique(Praticien *praticien);//fait
 
-void afficherPatienteleParDate(Praticien *praticien);
+void afficherPatienteleParDate(Praticien *praticien);//fait
 
-void afficherPatientsAbsentsDepuis(Praticien *praticien, char date[]);
+void afficherPatientsAbsentsDepuis(Praticien *praticien, char date[]); //fait
 
 int rechercheLineairePatient(Patient tab[], char numero_secu[]);
 
@@ -108,15 +108,15 @@ void triPatientsParDate(Patient tab[]);
 
 void menuPraticien(CentreMedical *centre); //fait
 
-void menuSecretaire(CentreMedical *centre); //elias ok
+void menuSecretaire(CentreMedical *centre); //fait
 
-void menuPraticien(CentreMedical *centre); //elias ok
+void menuPraticien(CentreMedical *centre); //fait
 
-int main(void);//elias ok
+int main(void);//fait
 
-void chargerCentre(CentreMedical *centre, const char *nom_fichier); //elias ok
+void chargerCentre(CentreMedical *centre, const char *nom_fichier); //fait
 
-void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //elias ok
+void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //fait
 
 
 //Fonction pour les Files

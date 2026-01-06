@@ -757,3 +757,83 @@ void enregistrerArriveePatient(CentreMedical *centre) {
         printf("Pas de place disponible pour un nouveau patient chez nos praticiens.\n"); [cite: 17, 35]
     }
 }
+
+void afficherPatienteleAlphabetique(Praticien *praticien) {
+    int n = praticien->maPatientele.nbPatients;
+    if (n == 0) {
+        printf("La clientele de Dr. %s est vide.\n", praticien->nom);
+        return;
+    }
+
+    // Création d'un tableau temporaire pour le tri
+    Patient *temp = (Patient*)malloc(n * sizeof(Patient));
+    for(int i=0; i<n; i++) temp[i] = praticien->maPatientele.listePatients[i];
+
+    // Tri à bulles par nom
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (strcmp(temp[j].nom, temp[j+1].nom) > 0) {
+                Patient aide = temp[j];
+                temp[j] = temp[j+1];
+                temp[j+1] = aide;
+            }
+        }
+    }
+    printf("\n--- Clientele de Dr. %s (Ordre A-Z) ---\n", praticien->nom);
+    for (int i = 0; i < n; i++) {
+        printf("%-20s | Secu: %s | Visite: %02d/%02d/%d\n", 
+               temp[i].nom, temp[i].numSecu, 
+               temp[i].derniereVisite.jour, temp[i].derniereVisite.mois, temp[i].derniereVisite.annee);
+    }
+    free(temp);
+}
+
+void afficherPatienteleParDate(Praticien *praticien) {
+    int n = praticien->maPatientele.nbPatients;
+    if (n == 0) return;
+
+    Patient *temp = (Patient*)malloc(n * sizeof(Patient));
+    for(int i=0; i<n; i++) temp[i] = praticien->maPatientele.listePatients[i];
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            long date1 = temp[j].derniereVisite.annee * 10000 + temp[j].derniereVisite.mois * 100 + temp[j].derniereVisite.jour;
+            long date2 = temp[j+1].derniereVisite.annee * 10000 + temp[j+1].derniereVisite.mois * 100 + temp[j+1].derniereVisite.jour;
+            
+            if (date1 < date2) {
+                Patient aide = temp[j];
+                temp[j] = temp[j+1];
+                temp[j+1] = aide;
+            }
+        }
+    }
+
+    printf("\n--- Clientele de Dr. %s (Par date de visite) ---\n", praticien->nom);
+    for (int i = 0; i < n; i++) {
+        printf("%02d/%02d/%d | %s\n", 
+               temp[i].derniereVisite.jour, temp[i].derniereVisite.mois, temp[i].derniereVisite.annee, temp[i].nom);
+    }
+    free(temp);
+}
+
+void afficherPatientsAbsentsDepuis(Praticien *praticien, char dateStr[]) {
+    int j_lim, m_lim, a_lim;
+    printf("Recherche des patients absents avant le (JJ MM AAAA) : ");
+    scanf("%d %d %d", &j_lim, &m_lim, &a_lim);
+    
+    long limite = a_lim * 10000 + m_lim * 100 + j_lim;
+    int compteur = 0;
+
+    printf("\n--- Patients non venus depuis le %02d/%02d/%d ---\n", j_lim, m_lim, a_lim);
+    for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
+        Patient p = praticien->maPatientele.listePatients[i];
+        long dateP = p.derniereVisite.annee * 10000 + p.derniereVisite.mois * 100 + p.derniereVisite.jour;
+        
+        if (dateP < limite) {
+            printf("- %s (Derniere visite : %02d/%02d/%d)\n", 
+                   p.nom, p.derniereVisite.jour, p.derniereVisite.mois, p.derniereVisite.annee);
+            compteur++;
+        }
+    }
+    if (compteur == 0) printf("Aucun patient concerne.\n");
+}
