@@ -116,6 +116,8 @@ void menuPraticien(CentreMedical *centre); //fait
 
 void menuSecretaire(CentreMedical *centre); //fait
 
+void menuPraticien(CentreMedical *centre);
+int main(void);
 
 
 //Fonction pour les Files

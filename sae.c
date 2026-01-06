@@ -152,7 +152,7 @@ Patient tete(File f){
         exit(1);
     }
     return f.t->info;
-}
+}   
 
 void initialiserCentre(CentreMedical *centre){
     centre->nbSpecialites = 0;
@@ -427,4 +427,176 @@ void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]) {
     if (trouve == 0) {
         printf("Aucun patient trouve avec ce numero de secu[cite: 17].\n");
     }
+}
+
+void menuSecretaire(CentreMedical *centre) {
+    int choix = -1,i,idxSpe;
+    char nomSpe[50],nomPrat[50];;
+
+    while (choix != 0) {
+        printf("\n------ MENU SECRETAIRE ------\n");
+        printf("1 - Ajouter un praticien\n");
+        printf("2 - Supprimer un praticien\n");
+        printf("3 - Afficher toutes les specialites\n");
+        printf("4 - Afficher les praticiens d'une specialite\n");
+        printf("5 - Afficher tout le centre medical\n");
+        printf("6 - Enregistrer l'arrivee d'un patient\n");
+        printf("0 - Retour\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+
+        if (choix == 1) {
+            ajouterPraticien(centre);
+            continue;
+        }
+        if (choix == 2) {
+            supprimerPraticien(centre);
+            continue;
+        }
+        if (choix == 3) {
+            afficherSpecialites(centre);
+            continue;
+        }
+        if (choix == 4) {
+            printf("Nom de la specialite : ");
+            scanf("%s", nomSpe);
+            afficherPraticiensParSpecialite(centre, nomSpe);
+            continue;
+        }
+        if (choix == 5) {
+            for (i = 0; i < centre->nbSpecialites; i++) {
+                printf("Specialite : %s\n", centre->tSpecialites[i].nomSpecialite);
+                afficherPraticiensParSpecialite(centre, centre->tSpecialites[i].nomSpecialite);
+            }
+            continue;
+        }
+        if (choix == 6) {
+            printf("Nom de la specialite : ");
+            scanf("%s", nomSpe);
+            idxSpe = rechercherSpecialite(centre, nomSpe);
+            if (idxSpe == -1) {
+                printf("Specialite inexistante.\n");
+            } else {
+                printf("Nom du praticien : ");
+                scanf("%s", nomPrat);
+                MaillonPraticien *p = centre->tSpecialites[idxSpe].listePraticiens;
+                while (p != NULL && strcmp(p->donnee.nom, nomPrat) != 0) {
+                    p = p->suivant;
+                }
+                if (p == NULL) {
+                    printf("Praticien introuvable.\n");
+                } else {
+                    Patient pat;
+                    printf("Nom du patient : ");
+                    scanf("%s", pat.nom);
+                    ajouterPatientFile(&p->donnee, pat);
+                }
+            }
+            continue;
+        }
+        if (choix == 0) {
+            main()
+        }
+        else { 
+            printf("Choix invalide.\n"); 
+            continue; 
+        } 
+    }
+}
+
+
+void menuPraticien(CentreMedical *centre) {
+    int choix = -1,idxSpe;
+    char nomSpe[50], nomPrat[50],numSecu[20];
+
+    printf("Nom de la specialite : ");
+    scanf("%s", nomSpe);
+    idxSpe = rechercherSpecialite(centre, nomSpe);
+    if (idxSpe == -1) {
+        printf("Specialite inexistante.\n");
+        return;
+    }
+
+    printf("Nom du praticien : ");
+    scanf("%s", nomPrat);
+    MaillonPraticien *p = centre->tSpecialites[idxSpe].listePraticiens;
+    while (p != NULL && strcmp(p->donnee.nom, nomPrat) != 0) {
+        p = p->suivant;
+    }
+    if (p == NULL) {
+        printf("Praticien introuvable.\n");
+        return;
+    }
+
+    Praticien *praticien = &p->donnee;
+
+    while (choix != 0) {
+        printf("\n------ MENU PRATICIEN ------\n");
+        printf("1 - Appeler le prochain patient\n");
+        printf("2 - Afficher la patientele (ordre alphabetique)\n");
+        printf("3 - Afficher la patientele (visite recente -> ancienne)\n");
+        printf("4 - Afficher les patients absents depuis une date\n");
+        printf("5 - Supprimer un patient de la patientele\n");
+        printf("0 - Retour\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+
+        if (choix == 1) {
+            appelerProchainPatient(praticien);
+            continue;
+        }
+        if (choix == 2) {
+            continue;
+        }
+        if (choix == 3) {
+            continue;
+        }
+        if (choix == 4) {
+            continue;
+        }
+        if (choix == 5) {
+            printf("Numero de secu du patient a supprimer : ");
+            scanf("%s", numSecu);
+            mettreAJourDateVisite(praticien, numSecu);
+            continue;
+        }
+        if (choix == 0) {
+            main()
+        }
+        else { 
+            printf("Choix invalide.\n"); 
+            continue; 
+        } 
+    }
+}
+
+int main(void) {
+    int choix = -1;
+
+    while (choix != 0) {
+        printf("\n==============================\n");
+        printf("  CENTRE MEDICAL\n");
+        printf("==============================\n");
+        printf("1 - Secretaire\n");
+        printf("2 - Praticien\n");
+        printf("0 - Quitter\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+
+        if (choix == 1) {
+            menuSecretaire();
+        }
+        else if (choix == 2) {
+            menuPraticien();
+        }
+        else if (choix == 0) {
+            printf("Fermeture du programme.\n");
+        }
+        else {
+            printf("Choix invalide.\n");
+            continue;
+        }
+    }
+
+    return 0;
 }
