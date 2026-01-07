@@ -61,62 +61,32 @@ typedef struct {
     int nbSpecialites;
 } CentreMedical;
 
-//Fonction 
+
 void initialiserCentre(CentreMedical *centre); //fait
-
-void ajouterPraticien(CentreMedical *centre);  //fait
-
-void supprimerPraticien(CentreMedical *centre); //fait
-
-int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
-
-int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
-
-void afficherSpecialites(CentreMedical *centre); //fait
-
-void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
-
+void chargerCentre(CentreMedical *centre, char *nom_fichier); //fait
+void sauvegarderCentre(CentreMedical *centre, char *nom_fichier); //fait
 void afficherCentre(CentreMedical *centre); //fait
-
-void enregistrerArriveePatient(CentreMedical *centre);//fait 
-
+int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+void afficherSpecialites(CentreMedical *centre); //fait
+void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]); //fait
+void ajouterPraticien(CentreMedical *centre);  //fait
+void supprimerPraticien(CentreMedical *centre); //fait
 int praticienPeutPrendrePatient(Praticien *praticien); //fait
-
+void enregistrerArriveePatient(CentreMedical *centre);//fait 
 void ajouterPatientFile(Praticien *praticien, Patient patient); //fait
-
 Patient retirerPatientFile(Praticien *praticien);//fait
-
 int fileVide(Praticien *praticien);//fait
-
 void appelerProchainPatient(Praticien *praticien);//fait
-
 void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]);//fait
-
 void afficherPatienteleAlphabetique(Praticien *praticien);//fait
-
 void afficherPatienteleParDate(Praticien *praticien);//fait
-
-void afficherPatientsAbsentsDepuis(Praticien *praticien, char date[]); //fait
-
-int rechercheLineairePatient(Patient tab[], char numero_secu[]);
-
-int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
-
-void triPatientsAlphabetique(Patient tab[]);
-
-void triPatientsParDate(Patient tab[]);
-
+void afficherPatientsAbsentsDepuis(Praticien *praticien); //fait
+int rechercheLineairePatient(Patient tab[], int n, char numero_secu[]); //fait
 void menuPraticien(CentreMedical *centre); //fait
-
 void menuSecretaire(CentreMedical *centre); //fait
-
 void menuPraticien(CentreMedical *centre); //fait
-
 int main(void);//fait
-
-void chargerCentre(CentreMedical *centre, const char *nom_fichier); //fait
-
-void sauvegarderCentre(CentreMedical *centre, const char *nom_fichier); //fait
 
 
 //Fonction pour les Files
@@ -127,3 +97,13 @@ File supt(File f);
 int longueur(File f);
 void afficher(File f);
 Patient tete(File f);
+
+//Fonction pour les tri 
+void triParEchangeSpecialites(Specialite tab[], int n);
+void triParEchangePatientNom(Patient tab[], int n);
+void trifusionPatientsDate(Patient tab[], int n);
+void echangerPatient(Patient tab[], int i, int j);
+int plusGrandPatientNom(Patient tab[], int n);
+int estPlusRecent(Date d1, Date d2);
+void copierPatients(Patient source[], int debut, int fin, Patient dest[]);
+void fusionPatientsDate(Patient R[], int n, Patient S[], int m, Patient T[]);

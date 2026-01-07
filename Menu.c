@@ -20,16 +20,16 @@ void menuSecretaire(CentreMedical *centre) {
         printf("Choix : ");
         scanf("%d", &choix);
 
-        if (choix == 1) ajouterPraticien(centre); [cite: 12]
-        if (choix == 2) supprimerPraticien(centre); [cite: 13]
-        if (choix == 3) afficherSpecialites(centre); [cite: 14]
+        if (choix == 1) ajouterPraticien(centre); 
+        if (choix == 2) supprimerPraticien(centre); 
+        if (choix == 3) afficherSpecialites(centre); 
         if (choix == 4) {
             printf("Nom de la specialite : ");
             scanf("%s", nomSpe);
-            afficherPraticiensParSpecialite(centre, nomSpe); [cite: 15]
+            afficherPraticiensParSpecialite(centre, nomSpe); 
         }
-        if (choix == 5) afficherCentre(centre); [cite: 16]
-        if (choix == 6) enregistrerArriveePatient(centre); [cite: 17]
+        if (choix == 5) afficherCentre(centre); 
+        if (choix == 6) enregistrerArriveePatient(centre); 
     }
 }
 
@@ -72,12 +72,12 @@ void menuPraticien(CentreMedical *centre) {
         printf("Choix : ");
         scanf("%d", &choix);
 
-        if (choix == 1) appelerProchainPatient(p); [cite: 19]
-        if (choix == 2) afficherPatienteleAlphabetique(p); [cite: 20]
-        if (choix == 3) afficherPatienteleParDate(p); [cite: 21]
+        if (choix == 1) appelerProchainPatient(p); 
+        if (choix == 2) afficherPatienteleAlphabetique(p);
+        if (choix == 3) afficherPatienteleParDate(p); 
         if (choix == 4) {
             // Ici tu appelleras la fonction de suppression de patient
-            printf("Fonctionnalite a venir...\n"); [cite: 21, 36]
+            printf("Fonctionnalite a venir...\n"); 
         }
     }
 }
@@ -97,7 +97,7 @@ void afficherMenuPrincipal(CentreMedical *centre) {
         if (choix == 1) menuSecretaire(centre);
         if (choix == 2) menuPraticien(centre);
         if (choix == 0) {
-            sauvegarderCentre(centre, "donnees_centre.dat"); [cite: 23]
+            sauvegarderCentre(centre, "donnees_centre.dat"); 
             printf("Fichiers enregistres. Au revoir.\n");
         }
     }
