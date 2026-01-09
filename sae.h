@@ -157,12 +157,6 @@ int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]);
  */
 int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]);
 
-/**
- * @brief Supprime une spécialité et tous ses praticiens
- * @param centre pointeur vers le centre
- */
-void supprimerSpecialite(CentreMedical *centre);
-
 /*  PRATICIENS  */
 
 /**
@@ -191,6 +185,20 @@ void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[
  */
 int praticienPeutPrendrePatient(Praticien *praticien);
 
+/**
+ * @brief Vérifie si la salle d'attente d'un praticien est vide.
+ * @param praticien Pointeur vers le praticien dont on veut vérifier la file.
+ * @return 1 si la salle d'attente est vide, 0 s'il y a des patients.
+ */
+int fileVide(Praticien *praticien);
+
+/**
+ * @brief Affiche la liste des patients qui ne sont pas venus depuis une date donnée.
+ * @details Demande à l'utilisateur de saisir une date limite et parcourt la patientèle 
+ * pour afficher ceux dont la dernière visite est antérieure à cette date.
+ * @param praticien Pointeur vers le praticien concerné.
+ */
+void afficherPatientsAbsents(Praticien *praticien);
 
 /*  PATIENTS  */
 
@@ -224,12 +232,6 @@ void afficherPatienteleAlphabetique(Praticien *praticien);
  * @param praticien pointeur vers le praticien
  */
 void afficherPatienteleParDate(Praticien *praticien);
-
-/**
- * @brief Supprime les patients absents depuis une date donnée
- * @param praticien pointeur vers le praticien
- */
-void faireMenagePatientele(Praticien *praticien);
 
 /**
  * @brief Supprime un patient de la patientèle
@@ -336,3 +338,4 @@ void menuPraticien(CentreMedical *centre);
  * @param centre pointeur vers le centre médical
  */
 void menuSecretaire(CentreMedical *centre);
+

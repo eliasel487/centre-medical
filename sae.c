@@ -730,12 +730,3 @@ void supprimerPatientDePatientele(Praticien *praticien, char numero_secu[]) {
 }
 
 
-
-
-
-
-
-
-
-
-
