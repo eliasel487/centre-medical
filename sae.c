@@ -308,7 +308,7 @@ void appelerProchainPatient(Praticien *praticien) {
             scanf("%s", poubelle);
             rep = 0; 
             }
-            if (rep == 1) {
+            if (rep == 1)
                 printf("Numero de Secu : "); scanf("%s", p.numSecu);
                 printf("Jour (JJ) : "); scanf("%d", &p.derniereVisite.jour);
                 printf("Mois (MM) :"); scanf("%d", &p.derniereVisite.mois);
