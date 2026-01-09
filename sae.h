@@ -85,6 +85,7 @@ void faireMenagePatientele(Praticien *praticien);int rechercheLineairePatient(Pa
 void menuPraticien(CentreMedical *centre); //fait
 void menuSecretaire(CentreMedical *centre); //fait
 void supprimerPatientDePatientele(Praticien *praticien, char numero_secu[]);
+void supprimerSpecialite(CentreMedical *centre);
 int main(void);//fait
 
 

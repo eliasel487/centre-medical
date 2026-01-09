@@ -84,7 +84,7 @@ void initialiserCentre(CentreMedical *centre){
 
 void ajouterPraticien(CentreMedical *centre){
     char nomSpe[50], nomDr[50];
-    int capacitemax, i,indSpe;
+    int capacitemax, i;
 
     if (centre->nbSpecialites >= MAX_SPECIALITES) {
         printf("Le centre a atteint son nombre maximal de spécialités.\n");
@@ -125,9 +125,9 @@ void ajouterPraticien(CentreMedical *centre){
     tmp->donnee.maPatientele.listePatients = (Patient*)malloc(capacitemax * sizeof(Patient));
 
 
-    tmp->suivant = centre->tSpecialites[indSpe].listePraticiens;
-    centre->tSpecialites[indSpe].listePraticiens = tmp;
-    centre->tSpecialites[indSpe].nbPraticiens++;
+    tmp->suivant = centre->tSpecialites[ind].listePraticiens;
+    centre->tSpecialites[ind].listePraticiens = tmp;
+    centre->tSpecialites[ind].nbPraticiens++;
 
     printf("Praticien ajouté avec succès.\n");
 }
@@ -140,7 +140,7 @@ void supprimerPraticien(CentreMedical *centre) {
     printf("Spécialité du praticien : ");
     scanf("%s", nomSpe);
     
-    int idxSpe = ajouterSpecialite(centre, nomSpe); // On réutilise la fonction de recherche  trouverSpecialite
+    int idxSpe = rechercherSpecialite(centre, nomSpe);
     if (idxSpe == -1) {
         printf("Spécialité introuvable.\n");
         return;
@@ -196,7 +196,7 @@ void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[
             p = centre->tSpecialites[i].listePraticiens;
             while (p != NULL) {
               if (p->donnee.maPatientele.nbPatients < p->donnee.maPatientele.capaciteMax) {
-                    printf("- Dr. %s (Places : %d/%d)\n", 
+                    printf("-%s (Places : %d/%d)\n", 
                            p->donnee.nom, 
                            p->donnee.maPatientele.nbPatients,
                            p->donnee.maPatientele.capaciteMax);
@@ -206,6 +206,7 @@ void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[
             return;
         }
     }
+    printf("Erreur : La specialite '%s' n'existe pas.\n", nom_specialite);
 }
 
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]) {
@@ -374,6 +375,7 @@ void menuSecretaire(CentreMedical *centre) {
         printf("4 - Afficher les praticiens d'une specialite acceptant de prendre de nouveaux patients\n");
         printf("5 - Afficher tout le centre medical\n");
         printf("6 - Enregistrer l'arrivee d'un patient\n");
+        printf("7 - Supprimer une specialité\n");
         printf("0 - Retour\n");
         printf("Votre choix : ");
         if (scanf("%d", &choix) == 0) {
@@ -402,6 +404,9 @@ void menuSecretaire(CentreMedical *centre) {
         }
         else if (choix == 6) {
             enregistrerArriveePatient(centre);
+        }
+        else if (choix == 7) {
+            supprimerSpecialite(centre);
         }
         else if (choix == 0) {
             return;
@@ -443,7 +448,7 @@ void menuPraticien(CentreMedical *centre) {
         printf("1 - Appeler le prochain patient\n");
         printf("2 - Afficher la patientele (ordre alphabetique)\n");
         printf("3 - Afficher la patientele (visite recente -> ancienne)\n");
-        printf("4 - Enlever les patieznts absents depuis une certaine date\n");
+        printf("4 - Enlever les patients absents depuis une certaine date\n");
         printf("5 - Supprimer un patient de la patientele\n");
         printf("0 - Retour\n");
         printf("Votre choix : ");
@@ -608,6 +613,7 @@ void enregistrerArriveePatient(CentreMedical *centre) {
     int idxSpe = rechercherSpecialite(centre, nomSpe);
     if (idxSpe == -1) {
         printf("Desole, pas de praticien de cette specialite dans le centre.\n"); 
+        return;
     }
 
     printf("Etes-vous deja suivi par un praticien ici ? (1:Oui / 0:Non) : ");
@@ -870,4 +876,45 @@ void supprimerPatientDePatientele(Praticien *praticien, char numero_secu[]) {
     praticien->maPatientele.nbPatients--;
 
     printf("Le patient a été supprimé de la patientèle avec succès.\n");
+}
+
+void supprimerSpecialite(CentreMedical *centre) {
+    char nomSpe[50];
+    int idx, i;
+    MaillonPraticien *courant, *aSupprimer;
+
+    printf("Nom de la specialite a supprimer : ");
+    scanf("%s", nomSpe);
+
+    idx = rechercherSpecialite(centre, nomSpe);
+
+    if (idx == -1) {
+        printf("Erreur : La specialite '%s' n'existe pas.\n", nomSpe);
+        return;
+    }
+
+    courant = centre->tSpecialites[idx].listePraticiens;
+    
+    while (courant != NULL) {
+        aSupprimer = courant;
+        courant = courant->suivant;
+
+        if (aSupprimer->donnee.maPatientele.listePatients != NULL) {
+            free(aSupprimer->donnee.maPatientele.listePatients);
+        }
+
+        while (!estVide(aSupprimer->donnee.salleAttente)) {
+            aSupprimer->donnee.salleAttente = supt(aSupprimer->donnee.salleAttente);
+        }
+
+        free(aSupprimer);
+    }
+
+    for (i = idx; i < centre->nbSpecialites - 1; i++) {
+        centre->tSpecialites[i] = centre->tSpecialites[i+1];
+    }
+
+    centre->nbSpecialites--;
+    
+    printf("La specialite '%s' et tous ses praticiens ont ete supprimes.\n", nomSpe);
 }
