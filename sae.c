@@ -195,7 +195,12 @@ void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[
 
             p = centre->tSpecialites[i].listePraticiens;
             while (p != NULL) {
-                printf("%s\n", p->donnee.nom);
+              if (p->donnee.maPatientele.nbPatients < p->donnee.maPatientele.capaciteMax) {
+                    printf("- Dr. %s (Places : %d/%d)\n", 
+                           p->donnee.nom, 
+                           p->donnee.maPatientele.nbPatients,
+                           p->donnee.maPatientele.capaciteMax);
+                }
                 p = p->suivant;
             }
             return;
@@ -311,19 +316,18 @@ void appelerProchainPatient(Praticien *praticien) {
     Patient p = retirerPatientFile(praticien);
     printf("\nAppel du patient : %s\n", p.nom);
     int trouve = rechercheLineairePatient(praticien->maPatientele.listePatients, praticien->maPatientele.nbPatients, p.numSecu);
-
     if (trouve != -1) {
-
-        printf("Patient deja suivi. Mise a jour de la date de visite.\n");
-        printf("Jour de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.jour);
-        printf("Mois de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.mois);
-        printf("Annee de la visite : "); scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.annee);
+        mettreAJourDateVisite(praticien, p.numSecu);
     } else {
 
         if (praticien->maPatientele.nbPatients < praticien->maPatientele.capaciteMax) {
             printf("Nouveau patient. Ajouter a la clientele ? (1:Oui / 0:Non) : ");
             int rep;
-            scanf("%d", &rep);
+            if (scanf("%d", &rep) == 0) {
+            char poubelle[50];
+            scanf("%s", poubelle);
+            rep = 0; 
+            }
             if (rep == 1) {
                 printf("Numero de Secu : "); scanf("%s", p.numSecu);
                 printf("Jour : "); scanf("%d", &p.derniereVisite.jour);
@@ -354,26 +358,28 @@ void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]) {
         printf("Nouvelle annee : "); 
         scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.annee);
     } else {
-        printf("Aucun patient trouve avec ce numero de secu[cite: 17].\n");
+        printf("Aucun patient trouve avec ce numero de secu\n");
     }
 }
 
 void menuSecretaire(CentreMedical *centre) {
     int choix = -1,i,idxSpe;
-    char nomSpe[50],nomPrat[50];;
+    char nomSpe[50],nomPrat[50],poubelle[50];
 
     while (choix != 0) {
         printf("\n------ MENU SECRETAIRE ------\n");
         printf("1 - Ajouter un praticien\n");
         printf("2 - Supprimer un praticien\n");
         printf("3 - Afficher toutes les specialites\n");
-        printf("4 - Afficher les praticiens d'une specialite\n");
+        printf("4 - Afficher les praticiens d'une specialite acceptant de prendre de nouveaux patients\n");
         printf("5 - Afficher tout le centre medical\n");
         printf("6 - Enregistrer l'arrivee d'un patient\n");
         printf("0 - Retour\n");
         printf("Votre choix : ");
-        scanf("%d", &choix);
-
+        if (scanf("%d", &choix) == 0) {
+            scanf("%s", poubelle);
+            choix = -1;
+        }
         if (choix == 1) {
             ajouterPraticien(centre);
         }
@@ -398,7 +404,7 @@ void menuSecretaire(CentreMedical *centre) {
             enregistrerArriveePatient(centre);
         }
         else if (choix == 0) {
-            main();
+            return;
         }
         else { 
             printf("Choix invalide.\n"); 
@@ -409,7 +415,7 @@ void menuSecretaire(CentreMedical *centre) {
 
 void menuPraticien(CentreMedical *centre) {
     int choix = -1,idxSpe;
-    char nomSpe[50], nomPrat[50],numSecu[20];
+    char nomSpe[50], nomPrat[50],numSecu[20],poubelle[50];
 
     printf("Nom de la specialite : ");
     scanf("%s", nomSpe);
@@ -437,12 +443,14 @@ void menuPraticien(CentreMedical *centre) {
         printf("1 - Appeler le prochain patient\n");
         printf("2 - Afficher la patientele (ordre alphabetique)\n");
         printf("3 - Afficher la patientele (visite recente -> ancienne)\n");
-        printf("4 - Afficher les patients absents depuis une date\n");
+        printf("4 - Enlever les patieznts absents depuis une certaine date\n");
         printf("5 - Supprimer un patient de la patientele\n");
         printf("0 - Retour\n");
         printf("Votre choix : ");
-        scanf("%d", &choix);
-
+        if (scanf("%d", &choix) == 0) {
+            scanf("%s", poubelle);
+            choix = -1;
+        }
         if (choix == 1) {
             appelerProchainPatient(praticien);
         }
@@ -453,13 +461,12 @@ void menuPraticien(CentreMedical *centre) {
             afficherPatienteleParDate(praticien);
         }
         else if (choix == 4) {
-            afficherPatientsAbsentsDepuis(praticien);
+            faireMenagePatientele(praticien);
         }
         else if (choix == 5) {
             printf("Numero de secu du patient a supprimer : ");
             scanf("%s", numSecu);
-            mettreAJourDateVisite(praticien, numSecu);
-        }
+            supprimerPatientDePatientele(praticien, numSecu);        }
         else if (choix == 0) {
             main();
         }
@@ -777,18 +784,26 @@ void afficherPatienteleParDate(Praticien *praticien) {
     free(temp);
 }
 
-void afficherPatientsAbsentsDepuis(Praticien *praticien) {
+void faireMenagePatientele(Praticien *praticien) {
     int j_lim, m_lim, a_lim;
-    printf("Recherche des patients absents avant le (JJ MM AAAA) : ");
-    scanf("%d %d %d", &j_lim, &m_lim, &a_lim);
-    
-    long limite = a_lim * 10000 + m_lim * 100 + j_lim;
     int compteur = 0;
+    long dateP, limite;
+    
+    // 1. On demande la date limite
+    printf("Recherche des patients absents avant le (JJ MM AAAA) : ");
+    if (scanf("%d %d %d", &j_lim, &m_lim, &a_lim) != 3) {
+        // Petit nettoyage du buffer si la saisie est ratée
+        char poubelle[50]; scanf("%s", poubelle);
+        return;
+    }
+    
+    limite = a_lim * 10000 + m_lim * 100 + j_lim;
 
-    printf("\n--- Patients non venus depuis le %02d/%02d/%d ---\n", j_lim, m_lim, a_lim);
+    // 2. On affiche d'abord ceux qui vont être supprimés (Prévisualisation)
+    printf("\n--- Patients a supprimer (absents depuis le %02d/%02d/%d) ---\n", j_lim, m_lim, a_lim);
     for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
         Patient p = praticien->maPatientele.listePatients[i];
-        long dateP = p.derniereVisite.annee * 10000 + p.derniereVisite.mois * 100 + p.derniereVisite.jour;
+        dateP = p.derniereVisite.annee * 10000 + p.derniereVisite.mois * 100 + p.derniereVisite.jour;
         
         if (dateP < limite) {
             printf("- %s (Derniere visite : %02d/%02d/%d)\n", 
@@ -796,5 +811,63 @@ void afficherPatientsAbsentsDepuis(Praticien *praticien) {
             compteur++;
         }
     }
-    if (compteur == 0) printf("Aucun patient concerne.\n");
+
+    if (compteur == 0) {
+        printf("Aucun patient a supprimer.\n");
+        return;
+    }
+
+    // 3. Demande de confirmation
+    int choix = 0;
+    printf("\nVoulez-vous vraiment supprimer ces %d patients ? (1:Oui / 0:Non) : ", compteur);
+    scanf("%d", &choix); // (Vous pouvez ajouter la sécurité scanf ici si vous voulez)
+
+    if (choix == 1) {
+        // 4. Algorithme de COMPACTAGE (On garde uniquement les patients récents)
+        int indexEcriture = 0; // Là où on va écrire les patients qu'on garde
+
+        for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
+            Patient p = praticien->maPatientele.listePatients[i];
+            dateP = p.derniereVisite.annee * 10000 + p.derniereVisite.mois * 100 + p.derniereVisite.jour;
+
+            // Si la date est >= limite, on GARDE le patient
+            if (dateP >= limite) {
+                // On le copie à la nouvelle position (si besoin)
+                if (indexEcriture != i) {
+                    praticien->maPatientele.listePatients[indexEcriture] = praticien->maPatientele.listePatients[i];
+                }
+                indexEcriture++;
+            }
+            // Sinon (si c'est vieux), on ne fait rien, il sera écrasé par les suivants
+        }
+
+        // On met à jour la taille du tableau
+        praticien->maPatientele.nbPatients = indexEcriture;
+        printf("Menage effectue. %d patients supprimes.\n", compteur);
+    } else {
+        printf("Operation annulee.\n");
+    }
+}
+void supprimerPatientDePatientele(Praticien *praticien, char numero_secu[]) {
+    int ind = rechercheLineairePatient(praticien->maPatientele.listePatients, 
+                                         praticien->maPatientele.nbPatients, 
+                                         numero_secu);
+
+    if (ind == -1) {
+        printf("Erreur : Aucun patient trouvé avec le numéro de sécu %s.\n", numero_secu);
+        return;
+    }
+
+    printf("Suppression du patient %s...\n", praticien->maPatientele.listePatients[ind].nom);
+
+    // 2. On décale tous les patients suivants vers la gauche pour combler le vide
+    // On va de la case à supprimer jusqu'à l'avant-dernière case
+    for (int i = ind; i < praticien->maPatientele.nbPatients - 1; i++) {
+        praticien->maPatientele.listePatients[i] = praticien->maPatientele.listePatients[i+1];
+    }
+
+    // 3. On réduit le compteur de patients
+    praticien->maPatientele.nbPatients--;
+
+    printf("Le patient a été supprimé de la patientèle avec succès.\n");
 }

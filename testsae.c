@@ -7,6 +7,7 @@
 int main(void) {
     CentreMedical monCentre;
     int choix = -1;
+    char poubelle[50];
     initialiserCentre(&monCentre);
     chargerCentre(&monCentre, "donnees_centre.txt");
 
@@ -18,8 +19,10 @@ int main(void) {
         printf("2 - Praticien\n");
         printf("0 - Quitter\n");
         printf("Votre choix : ");
-        scanf("%d", &choix);
-
+        if (scanf("%d", &choix) == 0) {
+            scanf("%s", poubelle);
+            choix = -1;
+        }
         if (choix == 1) {
             menuSecretaire(&monCentre);
         }
@@ -36,7 +39,6 @@ int main(void) {
             continue;
         }
     }
-
     return 0;
 }
 

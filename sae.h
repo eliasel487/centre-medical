@@ -81,11 +81,10 @@ void appelerProchainPatient(Praticien *praticien);//fait
 void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]);//fait
 void afficherPatienteleAlphabetique(Praticien *praticien);//fait
 void afficherPatienteleParDate(Praticien *praticien);//fait
-void afficherPatientsAbsentsDepuis(Praticien *praticien); //fait
-int rechercheLineairePatient(Patient tab[], int n, char numero_secu[]); //fait
+void faireMenagePatientele(Praticien *praticien);int rechercheLineairePatient(Patient tab[], int n, char numero_secu[]); //fait
 void menuPraticien(CentreMedical *centre); //fait
 void menuSecretaire(CentreMedical *centre); //fait
-void menuPraticien(CentreMedical *centre); //fait
+void supprimerPatientDePatientele(Praticien *praticien, char numero_secu[]);
 int main(void);//fait
 
 
