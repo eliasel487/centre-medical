@@ -36,7 +36,6 @@ int main(void) {
         }
         else {
             printf("Choix invalide.\n");
-            continue;
         }
     }
     return 0;
