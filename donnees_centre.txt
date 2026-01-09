@@ -1,4 +1,4 @@
-4
+3
 Cardiologie
 2
 Dr_Voisin 50 3
@@ -7,9 +7,6 @@ Baudelaire 1670388654321 20/11/2025
 Hugo 1820477987654 5/1/2026
 Dr_Moreau 30 1
 Verne 1540866111222 14/12/2025
-Dentiste
-1
-Dr_Nozman 10 0
 Generaliste
 2
 Dr_Martin 100 2
