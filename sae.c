@@ -116,19 +116,16 @@ void ajouterPraticien(CentreMedical *centre){
 
     MaillonPraticien *tmp = (MaillonPraticien*)malloc(sizeof(MaillonPraticien));
     if (tmp == NULL) exit(1);
-
     strcpy(tmp->donnee.nom, nomDr);
     tmp->donnee.salleAttente = filenouv();
-
     tmp->donnee.maPatientele.nbPatients = 0;
+
     tmp->donnee.maPatientele.capaciteMax = capacitemax;
     tmp->donnee.maPatientele.listePatients = (Patient*)malloc(capacitemax * sizeof(Patient));
-
-
     tmp->suivant = centre->tSpecialites[ind].listePraticiens;
+
     centre->tSpecialites[ind].listePraticiens = tmp;
     centre->tSpecialites[ind].nbPraticiens++;
-
     printf("Praticien ajouté avec succès.\n");
 }
 
@@ -154,27 +151,16 @@ void supprimerPraticien(CentreMedical *centre) {
 
     while (courant != NULL) {
         if (strcmp(courant->donnee.nom, nomDr) == 0) {
-            // 1. Gérer le chaînage pour ne pas casser la liste
             if (precedent == NULL) {
-                // C'est le premier de la liste
                 centre->tSpecialites[idxSpe].listePraticiens = courant->suivant;
             } else {
-                // Il est au milieu ou à la fin
                 precedent->suivant = courant->suivant;
             }
-
-            // 2. Libérer la mémoire spécifique (Important pour la note !)
-            // On libère le tableau dynamique des patients
-            free(courant->donnee.maPatientele.listePatients); 
-            
-            // On devrait aussi vider la file d'attente si elle n'est pas vide
+            free(courant->donnee.maPatientele.listePatients);         
             while(!estVide(courant->donnee.salleAttente)) {
                 courant->donnee.salleAttente = supt(courant->donnee.salleAttente);
             }
-
-            // 3. Libérer le maillon lui-même
             free(courant);
-            
             centre->tSpecialites[idxSpe].nbPraticiens--;
             printf("Le praticien %s a été supprimé avec succès.\n", nomDr);
             return;
@@ -182,14 +168,12 @@ void supprimerPraticien(CentreMedical *centre) {
         precedent = courant;
         courant = courant->suivant;
     }
-
     printf("Praticien %s non trouvé dans la spécialité %s.\n", nomDr, nomSpe);
 }
 
 void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[]) {
     int i;
     MaillonPraticien *p;
-
     for (i = 0; i < centre->nbSpecialites; i++) {
         if (strcmp(centre->tSpecialites[i].nomSpecialite, nom_specialite) == 0) {
 
@@ -211,7 +195,6 @@ void afficherPraticiensParSpecialite(CentreMedical *centre, char nom_specialite[
 
 int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]) {
     int i;
-
     for (i = 0; i < centre->nbSpecialites; i++) {
         if (strcmp(centre->tSpecialites[i].nomSpecialite, nom_specialite) == 0) {
             return i;
@@ -221,15 +204,12 @@ int rechercherSpecialite(CentreMedical *centre, char nom_specialite[]) {
 }
 
 int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]) {
-
     if (centre->nbSpecialites >= MAX_SPECIALITES) {
         return 0;
     }
-
     if (rechercherSpecialite(centre, nom_specialite) != -1) {
         return 0;
     }
-
     strcpy(centre->tSpecialites[centre->nbSpecialites].nomSpecialite, nom_specialite);
     centre->tSpecialites[centre->nbSpecialites].listePraticiens = NULL;
     centre->tSpecialites[centre->nbSpecialites].nbPraticiens = 0;
@@ -240,7 +220,6 @@ int ajouterSpecialite(CentreMedical *centre, char nom_specialite[]) {
 void triParEchangeSpecialites(Specialite tab[], int n) {
     int i, j, min;
     Specialite temp;
-    
     for (i = 0; i < n - 1; i++) {
         min = i;
         for (j = i + 1; j < n; j++) {
@@ -253,7 +232,6 @@ void triParEchangeSpecialites(Specialite tab[], int n) {
         tab[i] = temp;
     }
 }
-
 void afficherSpecialites(CentreMedical *centre) {
     int i;
     if (centre->nbSpecialites == 0) {
@@ -279,7 +257,6 @@ void ajouterPatientFile(Praticien *praticien, Patient patient) {
     printf("Patient ajoute a la file d'attente du Dr %s.\n", praticien->nom);
 }
 
-// Retire et retourne le patient en tête de la file d'attente
 Patient retirerPatientFile(Praticien *praticien) {
     if (fileVide(praticien)) {
         printf("Erreur : La file d'attente est vide.\n");
@@ -290,7 +267,6 @@ Patient retirerPatientFile(Praticien *praticien) {
     return p;
 }
 
-// Vérifie si la salle d'attente est vide
 int fileVide(Praticien *praticien) {
     if (estVide(praticien->salleAttente) == VRAI) {
         return 1;
@@ -308,7 +284,6 @@ int rechercheLineairePatient(Patient tab[], int n, char numero_secu[]) {
     return -1;
 }
 
-
 void appelerProchainPatient(Praticien *praticien) {
     if (fileVide(praticien)) {
         printf("La salle d'attente est vide.\n");
@@ -325,7 +300,6 @@ void appelerProchainPatient(Praticien *praticien) {
     if (trouve != -1) {
         mettreAJourDateVisite(praticien, p.numSecu);
     } else {
-
         if (praticien->maPatientele.nbPatients < praticien->maPatientele.capaciteMax) {
             printf("Nouveau patient. Ajouter a la clientele ? (1:Oui / 0:Non) : ");
             int rep;
@@ -342,26 +316,21 @@ void appelerProchainPatient(Praticien *praticien) {
 
                 praticien->maPatientele.listePatients[praticien->maPatientele.nbPatients] = p;
                 praticien->maPatientele.nbPatients++;
-                printf("!!! SUCCES : LE COMPTEUR EST PASSE A %d !!!\n", praticien->maPatientele.nbPatients);
             }
         } else {
-            printf("Clientele complete[cite: 17]. Consultation simple uniquement.\n");
+            printf("Clientele complete. Consultation simple uniquement.\n");
         }
     }
 }
 
 void mettreAJourDateVisite(Praticien *praticien, char numero_secu[]) {
     int trouve = rechercheLineairePatient(praticien->maPatientele.listePatients, praticien->maPatientele.nbPatients, numero_secu);
-    
     if (trouve != -1) {
-        printf("Mise a jour pour %s.\n", praticien->maPatientele.listePatients[trouve].nom);
-        
+        printf("Mise a jour pour %s.\n", praticien->maPatientele.listePatients[trouve].nom);    
         printf("Nouveau jour : "); 
-        scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.jour);
-        
+        scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.jour);   
         printf("Nouveau mois : "); 
         scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.mois);
-        
         printf("Nouvelle annee : "); 
         scanf("%d", &praticien->maPatientele.listePatients[trouve].derniereVisite.annee);
     } else {
@@ -622,13 +591,10 @@ void enregistrerArriveePatient(CentreMedical *centre) {
         printf("Desole, pas de praticien de cette specialite dans le centre.\n"); 
         return;
     }
-
     printf("Etes-vous deja suivi par un praticien ici ? (1:Oui / 0:Non) : ");
     scanf("%d", &aDejaMedecin);
-
     Praticien *choisi = NULL;
     MaillonPraticien *courant = centre->tSpecialites[idxSpe].listePraticiens;
-
     if (aDejaMedecin == 1) {
         printf("Nom de votre praticien : "); scanf("%s", nomDr);
         while (courant != NULL) {
@@ -688,7 +654,6 @@ void triParEchangePatientNom(Patient tab[], int n) {
 
 void afficherPatienteleAlphabetique(Praticien *praticien) {
     int n = praticien->maPatientele.nbPatients;
-
     if (n == 0) {
         printf("La clientele de Dr. %s est vide.\n", praticien->nom);
         return;
@@ -727,7 +692,6 @@ void copierPatients(Patient source[], int debut, int fin, Patient dest[]) {
 void fusionPatientsDate(Patient R[], int n, Patient S[], int m, Patient T[]) {
     int i = 0, j = 0, k = 0;
     while (i < n && j < m) {
-        // On veut le plus récent en premier (Ordre décroissant)
         if (estPlusRecent(R[i].derniereVisite, S[j].derniereVisite)) {
             T[k] = R[i];
             i++;
@@ -751,7 +715,6 @@ void trifusionPatientsDate(Patient tab[], int n) {
     if (n <= 1) return;
 
     Patient *R, *S;
-    // Allocation dynamique (comme dans votre fichier tri.c)
     R = (Patient*)malloc((n / 2) * sizeof(Patient));
     S = (Patient*)malloc((n - n / 2) * sizeof(Patient));
 
@@ -769,7 +732,6 @@ void trifusionPatientsDate(Patient tab[], int n) {
     free(S);
 }
 
-/* Fonction wrapper pour le tri par date (à ajouter avant les menus) */
 void afficherPatienteleParDate(Praticien *praticien) {
     int n = praticien->maPatientele.nbPatients;
     
@@ -777,17 +739,12 @@ void afficherPatienteleParDate(Praticien *praticien) {
         printf("La clientele de Dr. %s est vide.\n", praticien->nom);
         return;
     }
-
-    // Copie temporaire
     Patient *temp = (Patient*)malloc(n * sizeof(Patient));
     if (temp == NULL) exit(1);
     for(int i = 0; i < n; i++) {
         temp[i] = praticien->maPatientele.listePatients[i];
     }
-
-    // Appel de VOTRE fonction de tri fusion définie plus bas
     trifusionPatientsDate(temp, n);
-
     printf("\n--- Clientele de Dr. %s (Plus recent au plus ancien) ---\n", praticien->nom);
     for (int i = 0; i < n; i++) {
         printf("%02d/%02d/%d | %s\n", 
@@ -802,17 +759,13 @@ void faireMenagePatientele(Praticien *praticien) {
     int compteur = 0;
     long dateP, limite;
     
-    // 1. On demande la date limite
     printf("Recherche des patients absents avant le (JJ MM AAAA) : ");
     if (scanf("%d %d %d", &j_lim, &m_lim, &a_lim) != 3) {
-        // Petit nettoyage du buffer si la saisie est ratée
         char poubelle[50]; scanf("%s", poubelle);
         return;
     }
     
     limite = a_lim * 10000 + m_lim * 100 + j_lim;
-
-    // 2. On affiche d'abord ceux qui vont être supprimés (Prévisualisation)
     printf("\n--- Patients a supprimer (absents depuis le %02d/%02d/%d) ---\n", j_lim, m_lim, a_lim);
     for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
         Patient p = praticien->maPatientele.listePatients[i];
@@ -829,32 +782,22 @@ void faireMenagePatientele(Praticien *praticien) {
         printf("Aucun patient a supprimer.\n");
         return;
     }
-
-    // 3. Demande de confirmation
     int choix = 0;
     printf("\nVoulez-vous vraiment supprimer ces %d patients ? (1:Oui / 0:Non) : ", compteur);
-    scanf("%d", &choix); // (Vous pouvez ajouter la sécurité scanf ici si vous voulez)
-
+    scanf("%d", &choix);
     if (choix == 1) {
-        // 4. Algorithme de COMPACTAGE (On garde uniquement les patients récents)
-        int indexEcriture = 0; // Là où on va écrire les patients qu'on garde
+        int indexEcriture = 0; 
 
         for (int i = 0; i < praticien->maPatientele.nbPatients; i++) {
             Patient p = praticien->maPatientele.listePatients[i];
             dateP = p.derniereVisite.annee * 10000 + p.derniereVisite.mois * 100 + p.derniereVisite.jour;
-
-            // Si la date est >= limite, on GARDE le patient
             if (dateP >= limite) {
-                // On le copie à la nouvelle position (si besoin)
                 if (indexEcriture != i) {
                     praticien->maPatientele.listePatients[indexEcriture] = praticien->maPatientele.listePatients[i];
                 }
                 indexEcriture++;
             }
-            // Sinon (si c'est vieux), on ne fait rien, il sera écrasé par les suivants
         }
-
-        // On met à jour la taille du tableau
         praticien->maPatientele.nbPatients = indexEcriture;
         printf("Menage effectue. %d patients supprimes.\n", compteur);
     } else {
@@ -870,18 +813,11 @@ void supprimerPatientDePatientele(Praticien *praticien, char numero_secu[]) {
         printf("Erreur : Aucun patient trouvé avec le numéro de sécu %s.\n", numero_secu);
         return;
     }
-
     printf("Suppression du patient %s...\n", praticien->maPatientele.listePatients[ind].nom);
-
-    // 2. On décale tous les patients suivants vers la gauche pour combler le vide
-    // On va de la case à supprimer jusqu'à l'avant-dernière case
     for (int i = ind; i < praticien->maPatientele.nbPatients - 1; i++) {
         praticien->maPatientele.listePatients[i] = praticien->maPatientele.listePatients[i+1];
     }
-
-    // 3. On réduit le compteur de patients
     praticien->maPatientele.nbPatients--;
-
     printf("Le patient a été supprimé de la patientèle avec succès.\n");
 }
 
@@ -899,29 +835,22 @@ void supprimerSpecialite(CentreMedical *centre) {
         printf("Erreur : La specialite '%s' n'existe pas.\n", nomSpe);
         return;
     }
-
     courant = centre->tSpecialites[idx].listePraticiens;
-    
     while (courant != NULL) {
         aSupprimer = courant;
         courant = courant->suivant;
-
         if (aSupprimer->donnee.maPatientele.listePatients != NULL) {
             free(aSupprimer->donnee.maPatientele.listePatients);
         }
-
         while (!estVide(aSupprimer->donnee.salleAttente)) {
             aSupprimer->donnee.salleAttente = supt(aSupprimer->donnee.salleAttente);
         }
-
         free(aSupprimer);
     }
 
     for (i = idx; i < centre->nbSpecialites - 1; i++) {
         centre->tSpecialites[i] = centre->tSpecialites[i+1];
     }
-
     centre->nbSpecialites--;
-    
     printf("La specialite '%s' et tous ses praticiens ont ete supprimes.\n", nomSpe);
 }
